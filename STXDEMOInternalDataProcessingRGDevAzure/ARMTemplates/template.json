@@ -1,0 +1,999 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_cluster_fsw_name": {
+            "defaultValue": "cluster-fsw",
+            "type": "String"
+        },
+        "virtualMachines_ad_primary_dc_name": {
+            "defaultValue": "ad-primary-dc",
+            "type": "String"
+        },
+        "loadBalancers_sqlLoadBalancer_name": {
+            "defaultValue": "sqlLoadBalancer",
+            "type": "String"
+        },
+        "virtualMachines_ad_secondary_dc_name": {
+            "defaultValue": "ad-secondary-dc",
+            "type": "String"
+        },
+        "virtualNetworks_autohav2VNETxio_name": {
+            "defaultValue": "autohav2VNETxio",
+            "type": "String"
+        },
+        "storageAccounts_ugmhu2ams4uzefsw_name": {
+            "defaultValue": "ugmhu2ams4uzefsw",
+            "type": "String"
+        },
+        "networkInterfaces_cluster_fsw_nic_name": {
+            "defaultValue": "cluster-fsw-nic",
+            "type": "String"
+        },
+        "networkInterfaces_sqlserver_0_nic_name": {
+            "defaultValue": "sqlserver-0-nic",
+            "type": "String"
+        },
+        "networkInterfaces_sqlserver_1_nic_name": {
+            "defaultValue": "sqlserver-1-nic",
+            "type": "String"
+        },
+        "publicIPAddresses_backupDCIPxiosh_name": {
+            "defaultValue": "backupDCIPxiosh",
+            "type": "String"
+        },
+        "publicIPAddresses_primaryDCIPxios_name": {
+            "defaultValue": "primaryDCIPxios",
+            "type": "String"
+        },
+        "publicIPAddresses_sql0IPxioshubgt_name": {
+            "defaultValue": "sql0IPxioshubgt",
+            "type": "String"
+        },
+        "publicIPAddresses_sql1IPxioshubgt_name": {
+            "defaultValue": "sql1IPxioshubgt",
+            "type": "String"
+        },
+        "storageAccounts_ugmhu2ams4uzediag_name": {
+            "defaultValue": "ugmhu2ams4uzediag",
+            "type": "String"
+        },
+        "availabilitySets_adAvailabilitySet_name": {
+            "defaultValue": "adAvailabilitySet",
+            "type": "String"
+        },
+        "availabilitySets_sqlAvailabilitySet_name": {
+            "defaultValue": "sqlAvailabilitySet",
+            "type": "String"
+        },
+        "networkInterfaces_ad_primary_dc_nic_name": {
+            "defaultValue": "ad-primary-dc-nic",
+            "type": "String"
+        },
+        "networkInterfaces_ad_secondary_dc_nic_name": {
+            "defaultValue": "ad-secondary-dc-nic",
+            "type": "String"
+        },
+        "storageAccounts_dcsqlrgdatastdstrgdev_name": {
+            "defaultValue": "dcsqlrgdatastdstrgdev",
+            "type": "String"
+        },
+        "storageAccounts_stxsqlrgdatastdstrgdev_name": {
+            "defaultValue": "stxsqlrgdatastdstrgdev",
+            "type": "String"
+        },
+        "subnets_sqlSubnet_name": {
+            "defaultValue": "sqlSubnet",
+            "type": "String"
+        },
+        "subnets_staticSubnet_name": {
+            "defaultValue": "staticSubnet",
+            "type": "String"
+        },
+        "extensions_InstallDomainController_name": {
+            "defaultValue": "InstallDomainController",
+            "type": "String"
+        },
+        "loadBalancers_sqlLoadBalancer_id": {
+            "defaultValue": "/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/loadBalancers/sqlLoadBalancer/frontendIPConfigurations/sqlLBFE",
+            "type": "String"
+        },
+        "loadBalancers_sqlLoadBalancer_id_1": {
+            "defaultValue": "/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/loadBalancers/sqlLoadBalancer/backendAddressPools/sqlLBBE",
+            "type": "String"
+        },
+        "loadBalancers_sqlLoadBalancer_id_2": {
+            "defaultValue": "/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/loadBalancers/sqlLoadBalancer/probes/SQLAlwaysOnEndPointProbe",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Compute/availabilitySets/adAvailabilitySet'.",
+            "type": "Microsoft.Compute/availabilitySets",
+            "sku": {
+                "name": "Classic"
+            },
+            "name": "[parameters('availabilitySets_adAvailabilitySet_name')]",
+            "apiVersion": "2017-03-30",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "platformUpdateDomainCount": 5,
+                "platformFaultDomainCount": 3,
+                "virtualMachines": [
+                    {
+                        "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_primary_dc_name'))]"
+                    },
+                    {
+                        "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_secondary_dc_name'))]"
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_primary_dc_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_secondary_dc_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Compute/availabilitySets/sqlAvailabilitySet'.",
+            "type": "Microsoft.Compute/availabilitySets",
+            "sku": {
+                "name": "Classic"
+            },
+            "name": "[parameters('availabilitySets_sqlAvailabilitySet_name')]",
+            "apiVersion": "2017-03-30",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "platformUpdateDomainCount": 3,
+                "platformFaultDomainCount": 3,
+                "virtualMachines": [
+                    {
+                        "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_cluster_fsw_name'))]"
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_cluster_fsw_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Compute/virtualMachines/ad-primary-dc'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_ad_primary_dc_name')]",
+            "apiVersion": "2017-03-30",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_adAvailabilitySet_name'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_D1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "osdisk",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('http', '://', parameters('storageAccounts_dcsqlrgdatastdstrgdev_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_ad_primary_dc_name'),'-osdisk.vhd'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "name": "[concat(parameters('virtualMachines_ad_primary_dc_name'),'-data-disk1')]",
+                            "createOption": "Empty",
+                            "vhd": {
+                                "uri": "[concat('http', '://', parameters('storageAccounts_dcsqlrgdatastdstrgdev_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_ad_primary_dc_name'),'data-1.vhd'))]"
+                            },
+                            "caching": "None",
+                            "diskSizeGB": 128
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_ad_primary_dc_name')]",
+                    "adminUsername": "RGAdmin",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_ad_primary_dc_nic_name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('http', '://', parameters('storageAccounts_ugmhu2ams4uzediag_name'), '.blob.core.windows.net', '/')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_adAvailabilitySet_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_dcsqlrgdatastdstrgdev_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_ad_primary_dc_nic_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_ugmhu2ams4uzediag_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Compute/virtualMachines/ad-secondary-dc'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_ad_secondary_dc_name')]",
+            "apiVersion": "2017-03-30",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_adAvailabilitySet_name'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_D1_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "osdisk",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('http', '://', parameters('storageAccounts_dcsqlrgdatastdstrgdev_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_ad_secondary_dc_name'),'-osdisk.vhd'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "name": "[concat(parameters('virtualMachines_ad_secondary_dc_name'),'-data-disk1')]",
+                            "createOption": "Empty",
+                            "vhd": {
+                                "uri": "[concat('http', '://', parameters('storageAccounts_dcsqlrgdatastdstrgdev_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_ad_secondary_dc_name'),'data-1.vhd'))]"
+                            },
+                            "caching": "None",
+                            "diskSizeGB": 128
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_ad_secondary_dc_name')]",
+                    "adminUsername": "RGAdmin",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_ad_secondary_dc_nic_name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('http', '://', parameters('storageAccounts_ugmhu2ams4uzediag_name'), '.blob.core.windows.net', '/')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_adAvailabilitySet_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_dcsqlrgdatastdstrgdev_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_ad_secondary_dc_nic_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_ugmhu2ams4uzediag_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Compute/virtualMachines/cluster-fsw'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_cluster_fsw_name')]",
+            "apiVersion": "2017-03-30",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_sqlAvailabilitySet_name'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "osdisk",
+                        "createOption": "FromImage",
+                        "vhd": {
+                            "uri": "[concat('http', '://', parameters('storageAccounts_ugmhu2ams4uzefsw_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_cluster_fsw_name'),'-osdisk.vhd'))]"
+                        },
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "name": "[concat(parameters('virtualMachines_cluster_fsw_name'),'-data-disk1')]",
+                            "createOption": "Empty",
+                            "vhd": {
+                                "uri": "[concat('http', '://', parameters('storageAccounts_ugmhu2ams4uzefsw_name'), '.blob.core.windows.net', concat('/vhds/', parameters('virtualMachines_cluster_fsw_name'),'-data-1.vhd'))]"
+                            },
+                            "caching": "None",
+                            "diskSizeGB": 128
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_cluster_fsw_name')]",
+                    "adminUsername": "RGAdmin",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_cluster_fsw_nic_name'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('http', '://', parameters('storageAccounts_ugmhu2ams4uzediag_name'), '.blob.core.windows.net', '/')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySets_sqlAvailabilitySet_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_ugmhu2ams4uzefsw_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_cluster_fsw_nic_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_ugmhu2ams4uzediag_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/loadBalancers/sqlLoadBalancer'.",
+            "type": "Microsoft.Network/loadBalancers",
+            "name": "[parameters('loadBalancers_sqlLoadBalancer_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "b62e61dc-3c54-4183-99dd-c99cbe401e4f",
+                "frontendIPConfigurations": [
+                    {
+                        "name": "sqlLBFE",
+                        "etag": "W/\"687f1faf-b92f-45ba-8aa0-4014c6954367\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.1.9",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]"
+                            }
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "sqlLBBE",
+                        "etag": "W/\"687f1faf-b92f-45ba-8aa0-4014c6954367\"",
+                        "properties": {
+                            "provisioningState": "Succeeded"
+                        }
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "SQLAlwaysOnEndPointListener",
+                        "etag": "W/\"687f1faf-b92f-45ba-8aa0-4014c6954367\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "frontendIPConfiguration": {
+                                "id": "[parameters('loadBalancers_sqlLoadBalancer_id')]"
+                            },
+                            "frontendPort": 1433,
+                            "backendPort": 1433,
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 4,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "backendAddressPool": {
+                                "id": "[parameters('loadBalancers_sqlLoadBalancer_id_1')]"
+                            },
+                            "probe": {
+                                "id": "[parameters('loadBalancers_sqlLoadBalancer_id_2')]"
+                            }
+                        }
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "SQLAlwaysOnEndPointProbe",
+                        "etag": "W/\"687f1faf-b92f-45ba-8aa0-4014c6954367\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "Tcp",
+                            "port": 59999,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        }
+                    }
+                ],
+                "inboundNatRules": [],
+                "outboundNatRules": [],
+                "inboundNatPools": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/networkInterfaces/ad-primary-dc-nic'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_ad_primary_dc_nic_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "887c2025-9418-422a-ab71-b41be7569516",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"82988971-1270-434f-9960-920e7abb3198\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.0.4",
+                            "privateIPAllocationMethod": "Static",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_primaryDCIPxios_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_staticSubnet_name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "2tjz135dd1nubnxut3m44wezdd.ax.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-2C-13-1D",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_primary_dc_name'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_primaryDCIPxios_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_staticSubnet_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_primary_dc_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/networkInterfaces/ad-secondary-dc-nic'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_ad_secondary_dc_nic_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "a2ea5b1c-4bf9-4fe2-94fd-f8402d954f90",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"7af11278-e9b2-434b-9d30-744dfa83a73e\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.0.5",
+                            "privateIPAllocationMethod": "Static",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_backupDCIPxiosh_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_staticSubnet_name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "2tjz135dd1nubnxut3m44wezdd.ax.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-2C-1B-66",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_secondary_dc_name'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_backupDCIPxiosh_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_staticSubnet_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_secondary_dc_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/networkInterfaces/cluster-fsw-nic'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_cluster_fsw_nic_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "7d3b2933-7862-4f1f-9631-a01690e02374",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"c07671ed-8ab8-4d68-b619-651b4da405c4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.1.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "2tjz135dd1nubnxut3m44wezdd.ax.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-26-2E-F4",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_cluster_fsw_name'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_cluster_fsw_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/networkInterfaces/sqlserver-0-nic'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_sqlserver_0_nic_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "8fcb9348-6cd0-41ad-aa23-9ac1241e8fc2",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"fd22917a-aeb4-47a4-8ef5-35d42676bb83\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.1.5",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_sql0IPxioshubgt_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4",
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancers_sqlLoadBalancer_name')), '/backendAddressPools/sqlLBBE')]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "2tjz135dd1nubnxut3m44wezdd.ax.internal.cloudapp.net"
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_sql0IPxioshubgt_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancers_sqlLoadBalancer_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/networkInterfaces/sqlserver-1-nic'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_sqlserver_1_nic_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "49ba3f40-1e46-48e9-afee-6cbb0486a758",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"8525ab38-2853-422c-9523-52a96104c62c\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.1.6",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_sql1IPxioshubgt_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4",
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancers_sqlLoadBalancer_name')), '/backendAddressPools/sqlLBBE')]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "2tjz135dd1nubnxut3m44wezdd.ax.internal.cloudapp.net"
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_sql1IPxioshubgt_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_autohav2VNETxio_name'), parameters('subnets_sqlSubnet_name'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancers_sqlLoadBalancer_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/publicIPAddresses/backupDCIPxiosh'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_backupDCIPxiosh_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "8008cde2-cab2-4351-89fc-fb239604b1fd",
+                "ipAddress": "52.142.218.185",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/publicIPAddresses/primaryDCIPxios'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_primaryDCIPxios_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "2466fe59-b9af-44fe-a13a-ec8bb377fe06",
+                "ipAddress": "52.142.216.13",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/publicIPAddresses/sql0IPxioshubgt'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_sql0IPxioshubgt_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "0cad6054-b6b6-4246-aec9-9bb59ec35f1d",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/publicIPAddresses/sql1IPxioshubgt'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[parameters('publicIPAddresses_sql1IPxioshubgt_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "58f3da88-1eb8-40fc-a2cf-09c518d0fdf8",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/virtualNetworks/autohav2VNETxio'.",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[parameters('virtualNetworks_autohav2VNETxio_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "f79dd3e4-1ee3-40db-b6f4-9f59ef58991b",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "staticSubnet",
+                        "etag": "W/\"8caca5d4-b91c-4142-b84c-c202c7bc2db4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.0.0/24"
+                        }
+                    },
+                    {
+                        "name": "sqlSubnet",
+                        "etag": "W/\"8caca5d4-b91c-4142-b84c-c202c7bc2db4\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.0.1.0/26"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": []
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/internaldataprocessingrgdev/providers/Microsoft.Storage/storageAccounts/dcsqlrgdatastdstrgdev'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_dcsqlrgdatastdstrgdev_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "encryption": {
+                    "keySource": "Microsoft.Storage",
+                    "services": {
+                        "blob": {
+                            "enabled": true
+                        },
+                        "file": {
+                            "enabled": true
+                        }
+                    }
+                },
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "defaultAction": "Allow",
+                    "ipRules": [],
+                    "virtualNetworkRules": []
+                },
+                "supportsHttpsTrafficOnly": false
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/internaldataprocessingrgdev/providers/Microsoft.Storage/storageAccounts/stxsqlrgdatastdstrgdev'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_stxsqlrgdatastdstrgdev_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "encryption": {
+                    "keySource": "Microsoft.Storage",
+                    "services": {
+                        "blob": {
+                            "enabled": true
+                        },
+                        "file": {
+                            "enabled": true
+                        }
+                    }
+                },
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "defaultAction": "Allow",
+                    "ipRules": [],
+                    "virtualNetworkRules": []
+                },
+                "supportsHttpsTrafficOnly": false
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/internaldataprocessingrgdev/providers/Microsoft.Storage/storageAccounts/ugmhu2ams4uzediag'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_ugmhu2ams4uzediag_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "encryption": {
+                    "keySource": "Microsoft.Storage",
+                    "services": {
+                        "blob": {
+                            "enabled": true
+                        },
+                        "file": {
+                            "enabled": true
+                        }
+                    }
+                },
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "defaultAction": "Allow",
+                    "ipRules": [],
+                    "virtualNetworkRules": []
+                },
+                "supportsHttpsTrafficOnly": false
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/internaldataprocessingrgdev/providers/Microsoft.Storage/storageAccounts/ugmhu2ams4uzefsw'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_ugmhu2ams4uzefsw_name')]",
+            "apiVersion": "2017-06-01",
+            "location": "westeurope",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "encryption": {
+                    "keySource": "Microsoft.Storage",
+                    "services": {
+                        "blob": {
+                            "enabled": true
+                        },
+                        "file": {
+                            "enabled": true
+                        }
+                    }
+                },
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "defaultAction": "Allow",
+                    "ipRules": [],
+                    "virtualNetworkRules": []
+                },
+                "supportsHttpsTrafficOnly": false
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Compute/virtualMachines/ad-primary-dc/extensions/InstallDomainController'.",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('virtualMachines_ad_primary_dc_name'), '/', parameters('extensions_InstallDomainController_name'))]",
+            "apiVersion": "2017-03-30",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "autoUpgradeMinorVersion": false,
+                "settings": {
+                    "modulesURL": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sqlvm-alwayson-cluster/scripts/CreateADPDC.ps1.zip",
+                    "configurationFunction": "CreateADPDC.ps1\\CreateADPDC",
+                    "properties": {
+                        "domainName": "contoso.local",
+                        "adminCreds": {
+                            "userName": "RGAdmin",
+                            "password": "PrivateSettingsRef:adminPassword"
+                        }
+                    }
+                },
+                "protectedSettings": {}
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_ad_primary_dc_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/virtualNetworks/autohav2VNETxio/subnets/staticSubnet'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('virtualNetworks_autohav2VNETxio_name'), '/', parameters('subnets_staticSubnet_name'))]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.0.0/24"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_autohav2VNETxio_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/000979f8-ff19-45db-ac77-195bc9f1f0e2/resourceGroups/InternalDataProcessingRGDev/providers/Microsoft.Network/virtualNetworks/autohav2VNETxio/subnets/sqlSubnet'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('virtualNetworks_autohav2VNETxio_name'), '/', parameters('subnets_sqlSubnet_name'))]",
+            "apiVersion": "2017-06-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.0.1.0/26"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_autohav2VNETxio_name'))]"
+            ]
+        }
+    ]
+}
