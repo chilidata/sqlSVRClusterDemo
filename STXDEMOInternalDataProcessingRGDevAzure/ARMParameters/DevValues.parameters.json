@@ -1,0 +1,84 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_cluster_fsw_name": {
+            "value": null
+        },
+        "virtualMachines_ad_primary_dc_name": {
+            "value": null
+        },
+        "loadBalancers_sqlLoadBalancer_name": {
+            "value": null
+        },
+        "virtualMachines_ad_secondary_dc_name": {
+            "value": null
+        },
+        "virtualNetworks_autohav2VNETxio_name": {
+            "value": null
+        },
+        "storageAccounts_ugmhu2ams4uzefsw_name": {
+            "value": null
+        },
+        "networkInterfaces_cluster_fsw_nic_name": {
+            "value": null
+        },
+        "networkInterfaces_sqlserver_0_nic_name": {
+            "value": null
+        },
+        "networkInterfaces_sqlserver_1_nic_name": {
+            "value": null
+        },
+        "publicIPAddresses_backupDCIPxiosh_name": {
+            "value": null
+        },
+        "publicIPAddresses_primaryDCIPxios_name": {
+            "value": null
+        },
+        "publicIPAddresses_sql0IPxioshubgt_name": {
+            "value": null
+        },
+        "publicIPAddresses_sql1IPxioshubgt_name": {
+            "value": null
+        },
+        "storageAccounts_ugmhu2ams4uzediag_name": {
+            "value": null
+        },
+        "availabilitySets_adAvailabilitySet_name": {
+            "value": null
+        },
+        "availabilitySets_sqlAvailabilitySet_name": {
+            "value": null
+        },
+        "networkInterfaces_ad_primary_dc_nic_name": {
+            "value": null
+        },
+        "networkInterfaces_ad_secondary_dc_nic_name": {
+            "value": null
+        },
+        "storageAccounts_dcsqlrgdatastdstrgdev_name": {
+            "value": null
+        },
+        "storageAccounts_stxsqlrgdatastdstrgdev_name": {
+            "value": null
+        },
+        "subnets_sqlSubnet_name": {
+            "value": null
+        },
+        "subnets_staticSubnet_name": {
+            "value": null
+        },
+        "extensions_InstallDomainController_name": {
+            "value": null
+        },
+        "loadBalancers_sqlLoadBalancer_id": {
+            "value": null
+        },
+        "loadBalancers_sqlLoadBalancer_id_1": {
+            "value": null
+        },
+        "loadBalancers_sqlLoadBalancer_id_2": {
+            "value": null
+        }
+    }
+}
